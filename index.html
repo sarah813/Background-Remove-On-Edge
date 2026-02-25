@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Background Remove On Edge</title>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card">
+        <header class="header">
+          <p class="eyebrow">Client-side Edge Inference</p>
+          <h1>Background Remove On Edge</h1>
+          <p class="subtitle">
+            Upload an image, remove the background in your browser, and download a transparent PNG.
+          </p>
+        </header>
+
+        <div class="controls">
+          <label class="field">
+            <span>Upload image</span>
+            <input id="imageInput" type="file" accept="image/*" />
+          </label>
+
+          <label class="field">
+            <span>Quality mode</span>
+            <select id="qualityMode">
+              <option value="balanced">Balanced (faster, downscales very large images)</option>
+              <option value="max">Max quality (full resolution)</option>
+            </select>
+          </label>
+
+          <div class="actions">
+            <button id="removeBtn" type="button" disabled>Remove background</button>
+            <button id="downloadBtn" type="button" disabled>Download PNG</button>
+          </div>
+        </div>
+
+        <p id="status" data-state="idle">Upload an image to begin.</p>
+
+        <section class="previews">
+          <article class="preview-card">
+            <h2>Original</h2>
+            <img id="originalPreview" alt="Original upload preview" />
+          </article>
+
+          <article class="preview-card">
+            <h2>Result</h2>
+            <img id="resultPreview" alt="Background removed preview" />
+          </article>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
