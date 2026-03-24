@@ -7,6 +7,9 @@ const fixturePath = path.resolve("tests/fixtures/person.jpg");
 test("upload, remove background, and download PNG", async ({ page }) => {
   await page.goto("/");
 
+  await page.click("#removeBtn");
+  await expect(page.locator("#status")).toContainText("Please upload an image to begin.");
+
   await page.setInputFiles("#imageInput", fixturePath);
   await expect(page.locator("#removeBtn")).toBeEnabled();
 
@@ -17,6 +20,7 @@ test("upload, remove background, and download PNG", async ({ page }) => {
 
   const downloadPromise = page.waitForEvent("download");
   await page.click("#downloadBtn");
+  await expect(page.locator("#downloadStatus")).toContainText("Image downloading.");
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toMatch(/-no-bg\.png$/i);
 

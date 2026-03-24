@@ -9,7 +9,9 @@ const imageInput = document.getElementById("imageInput");
 const removeBtn = document.getElementById("removeBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 const qualityMode = document.getElementById("qualityMode");
+const qualityOptionButtons = Array.from(document.querySelectorAll(".quality-option"));
 const statusLabel = document.getElementById("status");
+const downloadStatusLabel = document.getElementById("downloadStatus");
 const originalPreview = document.getElementById("originalPreview");
 const resultPreview = document.getElementById("resultPreview");
 
@@ -23,11 +25,26 @@ function setStatus(state, message) {
   statusLabel.textContent = message;
 }
 
+function setDownloadStatus(message) {
+  downloadStatusLabel.textContent = message;
+}
+
 function updateControls({ processing = false } = {}) {
   imageInput.disabled = processing;
-  qualityMode.disabled = processing;
-  removeBtn.disabled = processing || !selectedFile;
+  qualityOptionButtons.forEach((button) => {
+    button.disabled = processing;
+  });
+  removeBtn.disabled = processing;
   downloadBtn.disabled = processing || !resultBlob;
+}
+
+function setQualityMode(mode) {
+  qualityMode.value = mode;
+  qualityOptionButtons.forEach((button) => {
+    const selected = button.dataset.mode === mode;
+    button.classList.toggle("is-selected", selected);
+    button.setAttribute("aria-pressed", selected ? "true" : "false");
+  });
 }
 
 function clearResult() {
@@ -52,23 +69,31 @@ async function onFileChange(event) {
   const [file] = event.target.files ?? [];
   if (!file) {
     selectedFile = null;
+    if (originalObjectUrl) {
+      URL.revokeObjectURL(originalObjectUrl);
+      originalObjectUrl = null;
+    }
     originalPreview.removeAttribute("src");
     clearResult();
-    setStatus("idle", "Upload an image to begin.");
+    setStatus("idle", "");
+    setDownloadStatus("");
     return;
   }
 
   selectedFile = file;
   setOriginalPreview(file);
   clearResult();
-  setStatus("idle", "Image ready. Click Remove background.");
+  setStatus("idle", "");
+  setDownloadStatus("");
 }
 
 async function onRemoveClick() {
   if (!selectedFile) {
+    setStatus("idle", "Please upload an image to begin.");
     return;
   }
 
+  setDownloadStatus("");
   updateControls({ processing: true });
   try {
     if (!E2E_MOCK_INFERENCE) {
@@ -103,6 +128,7 @@ function onDownloadClick() {
     return;
   }
 
+  setDownloadStatus("Image downloading.");
   const href = URL.createObjectURL(resultBlob);
   const anchor = document.createElement("a");
   anchor.href = href;
@@ -113,8 +139,19 @@ function onDownloadClick() {
   URL.revokeObjectURL(href);
 }
 
+function onQualityOptionClick(event) {
+  const mode = event.currentTarget.dataset.mode;
+  setQualityMode(mode);
+}
+
 imageInput.addEventListener("change", onFileChange);
 removeBtn.addEventListener("click", onRemoveClick);
 downloadBtn.addEventListener("click", onDownloadClick);
+qualityOptionButtons.forEach((button) => {
+  button.addEventListener("click", onQualityOptionClick);
+});
 
 updateControls();
+setQualityMode(qualityMode.value || "balanced");
+setStatus("idle", "");
+setDownloadStatus("");

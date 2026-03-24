@@ -9,45 +9,62 @@
     <main class="page">
       <section class="card">
         <header class="header">
-          <p class="eyebrow">Client-side Edge Inference</p>
-          <h1>Background Remove On Edge</h1>
-          <p class="subtitle">
-            Upload an image, remove the background in your browser, and download a transparent PNG.
-          </p>
+          <h1>Background Removal - On Edge</h1>
+          <p class="subtitle">Upload an image, choose quality mode &amp; download final .png image.</p>
         </header>
 
-        <div class="controls">
-          <label class="field">
-            <span>Upload image</span>
-            <input id="imageInput" type="file" accept="image/*" />
-          </label>
+        <section class="top-layout">
+          <div class="controls">
+            <label class="field">
+              <span>Upload image</span>
+              <input id="imageInput" type="file" accept="image/*" />
+            </label>
 
-          <label class="field">
-            <span>Quality mode</span>
-            <select id="qualityMode">
-              <option value="balanced">Balanced (faster, downscales very large images)</option>
-              <option value="max">Max quality (full resolution)</option>
-            </select>
-          </label>
-
-          <div class="actions">
-            <button id="removeBtn" type="button" disabled>Remove background</button>
-            <button id="downloadBtn" type="button" disabled>Download PNG</button>
+            <div class="quality-group">
+              <p class="quality-label">Quality mode</p>
+              <input id="qualityMode" type="hidden" value="balanced" />
+              <div class="quality-options" role="group" aria-label="Quality mode">
+                <button
+                  type="button"
+                  class="quality-option is-selected"
+                  data-mode="balanced"
+                  aria-pressed="true"
+                >
+                  Balanced (faster, downscales very large images)
+                </button>
+                <button
+                  type="button"
+                  class="quality-option"
+                  data-mode="max"
+                  aria-pressed="false"
+                >
+                  Max quality (full resolution)
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <p id="status" data-state="idle">Upload an image to begin.</p>
-
-        <section class="previews">
           <article class="preview-card">
-            <h2>Original</h2>
-            <img id="originalPreview" alt="Original upload preview" />
+            <h2>Image Preview</h2>
+            <img id="originalPreview" alt="" />
           </article>
+        </section>
 
+        <section class="middle-layout">
+          <button id="removeBtn" type="button">Remove Background</button>
+          <p id="status" data-state="idle" aria-live="polite"></p>
+        </section>
+
+        <section class="bottom-layout">
           <article class="preview-card">
-            <h2>Result</h2>
+            <h2>Final Image Preview</h2>
             <img id="resultPreview" alt="Background removed preview" />
           </article>
+
+          <div class="download-panel">
+            <button id="downloadBtn" type="button" disabled>Download Image</button>
+            <p id="downloadStatus" aria-live="polite"></p>
+          </div>
         </section>
       </section>
     </main>
