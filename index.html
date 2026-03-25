@@ -7,6 +7,7 @@
   </head>
   <body>
     <main class="page">
+      <img src="/images/cat-no-bg.png" alt="" class="cat" />
       <section class="card">
         <header class="header">
           <h1>Background Removal - On Edge</h1>
@@ -46,7 +47,10 @@
 
           <article class="preview-card">
             <h2>Image Preview</h2>
-            <img id="originalPreview" alt="" />
+            <div class="preview-stage">
+              <img id="originalPreview" alt="" />
+              <p class="preview-placeholder">Upload an image to see the preview.</p>
+            </div>
           </article>
         </section>
 
@@ -56,9 +60,12 @@
         </section>
 
         <section class="bottom-layout">
-          <article class="preview-card">
+          <article class="preview-card result-preview-card">
             <h2>Final Image Preview</h2>
-            <img id="resultPreview" alt="Background removed preview" />
+            <div class="preview-stage">
+              <img id="resultPreview" alt="Background removed preview" />
+              <p class="preview-placeholder">Click on "remove background" to see the result.</p>
+            </div>
           </article>
 
           <div class="download-panel">

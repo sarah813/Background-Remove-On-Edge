@@ -25,19 +25,37 @@ body {
 }
 
 .page {
+  --cat-width: clamp(180px, 24vw, 320px);
+  --cat-space: clamp(96px, 12vw, 128px);
   width: min(1500px, 100%);
   min-height: 100dvh;
   margin: 0 auto;
-  padding: 18px 26px;
-  display: grid;
+  padding: 20px 26px 18px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 0px;
+}
+
+.cat {
+  position: static;
+  display: block;
+  margin: 0;
+  top: 5px;
+  width: var(--cat-width);
+  height: auto;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 14px 20px rgba(17, 17, 17, 0.18));
 }
 
 .card {
   border-radius: 72px;
   background: var(--panel-bg);
   width: 100%;
-  max-height: calc(100dvh - 36px);
+  max-height: calc(100dvh - var(--cat-space) - 18px);
   overflow: auto;
   padding: clamp(24px, 3.6vh, 34px) clamp(20px, 2.6vw, 36px) clamp(28px, 5vh, 58px);
   scrollbar-gutter: stable;
@@ -118,15 +136,16 @@ input[type="file"] {
 .quality-options {
   display: grid;
   gap: 10px;
+  width: min(470px, 100%);
 }
 
 .quality-option {
   position: relative;
   width: 100%;
-  min-height: 58px;
+  min-height: 62px;
   justify-content: flex-start;
   text-align: left;
-  font-size: 1.02rem;
+  font-size: clamp(1.12rem, 1.3vw, 1.24rem);
   font-weight: 600;
   line-height: 1.2;
   padding: 10px 18px 10px 54px;
@@ -183,14 +202,25 @@ input[type="file"] {
 
 .preview-card {
   background: transparent;
-  min-height: clamp(190px, 27vh, 230px);
+  display: grid;
+  gap: 10px;
   padding: 12px 14px;
 }
 
 .preview-card h2 {
-  margin: 0 0 6px;
+  margin: 0;
   font-size: 1.5rem;
   font-weight: 500;
+}
+
+.preview-stage {
+  min-height: clamp(190px, 27vh, 230px);
+  padding: 14px 16px;
+  border: 2px dashed rgba(109, 138, 153, 0.5);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.38);
+  display: grid;
+  place-items: center;
 }
 
 .preview-card img {
@@ -200,8 +230,21 @@ input[type="file"] {
   display: block;
 }
 
-.preview-card img:not([src]) {
+.preview-stage img:not([src]) {
   display: none;
+}
+
+.preview-stage img[src] ~ .preview-placeholder {
+  display: none;
+}
+
+.preview-placeholder {
+  margin: 0;
+  max-width: 26ch;
+  text-align: center;
+  font-size: clamp(1.04rem, 1.45vw, 1.18rem);
+  line-height: 1.35;
+  color: var(--text-muted);
 }
 
 .middle-layout {
@@ -211,13 +254,14 @@ input[type="file"] {
   gap: 8px;
 }
 
+/*style for remove background & download image*/
 button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 56px;
-  border-radius: 10px;
-  border: 1px solid var(--button-border);
+  border-radius: 18px;
+  border: 2px solid var(--button-border);
   background: var(--button-bg);
   color: #0d1e27;
   font: inherit;
@@ -235,12 +279,13 @@ button:disabled {
   cursor: not-allowed;
 }
 
-#removeBtn {
-  min-width: min(520px, 100%);
-}
-
+#removeBtn,
 #downloadBtn {
-  min-width: min(440px, 100%);
+  min-width: 0;
+  width: auto;
+  max-width: 100%;
+  padding-inline: clamp(18px, 2vw, 26px);
+  white-space: nowrap;
 }
 
 #status,
@@ -252,14 +297,25 @@ button:disabled {
   text-align: center;
 }
 
+#status:empty,
+#downloadStatus:empty {
+  display: none;
+  min-height: 0;
+}
+
 #status[data-state="error"] {
   color: var(--error);
 }
 
 .bottom-layout {
-  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
+  grid-template-columns: minmax(320px, 1.1fr) minmax(270px, 0.9fr);
   width: 100%;
   margin: 0 auto;
+}
+
+.result-preview-card {
+  width: min(470px, 100%);
+  justify-self: start;
 }
 
 .download-panel {
@@ -268,15 +324,25 @@ button:disabled {
   align-content: center;
   gap: 8px;
   min-height: clamp(190px, 27vh, 230px);
+  margin-top: calc(1.5rem * 1.2 + 18px);
 }
 
 @media (max-width: 980px) {
   .page {
-    padding: 12px 16px;
+    --cat-width: clamp(150px, 34vw, 240px);
+    --cat-space: clamp(80px, 18vw, 104px);
+    padding: var(--cat-space) 16px 12px;
+  }
+
+  .cat {
+    top: 6px;
+    left: 50%;
+    width: var(--cat-width);
+    transform: translateX(-50%);
   }
 
   .card {
-    max-height: calc(100dvh - 24px);
+    max-height: calc(100dvh - var(--cat-space) - 12px);
     border-radius: 34px;
     padding: 28px 20px 36px;
   }
@@ -289,6 +355,7 @@ button:disabled {
 
   .download-panel {
     min-height: auto;
+    margin-top: 0;
   }
 
   .preview-card img {
