@@ -99,6 +99,7 @@ body {
 .field {
   display: grid;
   gap: 6px;
+  width: min(470px, 100%);
 }
 
 .field span {
@@ -109,22 +110,55 @@ body {
 
 input[type="file"] {
   width: 100%;
-  min-height: 38px;
-  border: 1px solid #cad7d9;
-  background: #fefefe;
-  color: var(--text-main);
+  min-height: 54px;
+  border: 2px solid #9fb2bc;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  color: #121212;
   font: inherit;
-  font-size: 1.05rem;
-  padding: 8px 12px;
+  font-size: clamp(1.05rem, 1.2vw, 1.16rem);
+  font-weight: 600;
+  padding: 6px 14px;
+  box-shadow: inset 0 0 0 1px rgba(109, 138, 153, 0.12);
+  cursor: pointer;
 }
 
 input[type="file"] {
   padding-block: 6px;
 }
 
+input[type="file"]:hover {
+  border-color: #7f9aa8;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+input[type="file"]:focus-visible {
+  outline: 3px solid rgba(109, 138, 153, 0.28);
+  outline-offset: 3px;
+}
+
+input[type="file"]::file-selector-button {
+  min-height: 36px;
+  margin-right: 14px;
+  padding: 0 16px;
+  border: 2px solid var(--button-border);
+  border-radius: 12px;
+  background: linear-gradient(90deg, #a7c7d6 0%, #c8dce4 100%);
+  color: #0d1e27;
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+input[type="file"]:hover::file-selector-button {
+  filter: brightness(0.97);
+}
+
 .quality-group {
   display: grid;
   gap: 8px;
+  width: min(470px, 100%);
 }
 
 .quality-label {
@@ -175,9 +209,12 @@ input[type="file"] {
   transform: translateY(-50%);
 }
 
-.quality-option:hover:enabled {
-  border-color: #7f9aa8;
-  background: rgba(255, 255, 255, 0.78);
+.quality-option:not(.is-selected):hover:enabled {
+  border-color: #7a97a5;
+  background: linear-gradient(90deg, #d8e8ef 0%, #e7f1f5 100%);
+  box-shadow:
+    0 6px 12px rgba(109, 138, 153, 0.1),
+    inset 3px 0 0 #9ab8c6;
 }
 
 .quality-option:focus-visible {
@@ -205,6 +242,15 @@ input[type="file"] {
   display: grid;
   gap: 10px;
   padding: 12px 14px;
+}
+
+.top-layout > .preview-card,
+.result-preview-card {
+  width: min(100%, clamp(320px, 44vw, 620px));
+}
+
+.top-layout > .preview-card {
+  justify-self: end;
 }
 
 .preview-card h2 {
@@ -270,7 +316,7 @@ button {
   cursor: pointer;
 }
 
-button:hover:enabled {
+button:not(.quality-option):hover:enabled {
   filter: brightness(0.97);
 }
 
@@ -314,7 +360,6 @@ button:disabled {
 }
 
 .result-preview-card {
-  width: min(470px, 100%);
   justify-self: start;
 }
 
@@ -351,6 +396,12 @@ button:disabled {
   .bottom-layout {
     width: 100%;
     grid-template-columns: 1fr;
+  }
+
+  .top-layout > .preview-card,
+  .result-preview-card {
+    width: 100%;
+    justify-self: stretch;
   }
 
   .download-panel {
