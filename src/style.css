@@ -16,6 +16,7 @@
 
   --cat-width: clamp(11rem, 18vw, 18rem);
   --cat-space: clamp(7rem, 11vw, 10rem);
+  --cat-rise-start: clamp(3.6rem, 7vw, 5.6rem);
 
   --panel-radius: clamp(2rem, 4vw, 4.5rem);
   --panel-pad: clamp(1.5rem, 3.2vmin, 2.25rem);
@@ -72,6 +73,7 @@ textarea {
   padding: var(--page-pad);
 
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -79,21 +81,40 @@ textarea {
 }
 
 .cat {
-  position: static;
+  position: relative;
   margin: 0;
   inline-size: var(--cat-width);
   block-size: auto;
-  z-index: 2;
+  z-index: 0;
   pointer-events: none;
   user-select: none;
   filter: drop-shadow(0 0.875rem 1.25rem rgba(17, 17, 17, 0.18));
+  transform: translateY(var(--cat-rise-start));
+  animation: cat-peek 1450ms cubic-bezier(0.2, 0.82, 0.2, 1) 120ms both;
 }
 
 .card {
   inline-size: 100%;
   background: var(--panel-bg);
   border-radius: var(--panel-radius);
-  padding: var(--panel-pad);
+  padding-inline: var(--panel-pad);
+  padding-block: clamp(1.15rem, 2.4vmin, 1.8rem);
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes cat-peek {
+  0% {
+    transform: translateY(var(--cat-rise-start));
+  }
+
+  72% {
+    transform: translateY(-0.12rem);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
 }
 
 .header {
@@ -126,6 +147,7 @@ textarea {
 }
 
 .controls,
+.preview-column,
 .field,
 .quality-group,
 .quality-options,
@@ -134,9 +156,25 @@ textarea {
   min-inline-size: 0;
 }
 
+.preview-column {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 0;
+  inline-size: 100%;
+}
+
 .controls {
   display: grid;
   gap: var(--field-gap);
+  inline-size: 100%;
+  max-inline-size: 31rem;
+  padding: clamp(0.85rem, 1.7vw, 1.15rem);
+  border-radius: calc(var(--soft-radius) - 0.125rem);
+  background: rgba(244, 244, 244, 0.72);
+  border: 0.0625rem solid rgba(159, 178, 188, 0.58);
+  box-shadow: inset 0 0 0 0.0625rem rgba(255, 255, 255, 0.32);
+  justify-self: start;
 }
 
 .field {
@@ -155,14 +193,16 @@ textarea {
 
 input[type="file"] {
   inline-size: 100%;
-  min-block-size: 3rem;
+  block-size: 3rem;
   border: var(--border-strong);
   border-radius: 0.9375rem;
   background: rgba(255, 255, 255, 0.6);
   color: #121212;
   font-size: clamp(1rem, 1.15vw, 1.12rem);
   font-weight: 600;
-  padding-block: 0.25rem;
+  display: flex;
+  align-items: center;
+  padding-block: 0;
   padding-inline: 0.75rem;
   box-shadow: var(--shadow-soft);
   cursor: pointer;
@@ -179,7 +219,8 @@ input[type="file"]:focus-visible {
 }
 
 input[type="file"]::file-selector-button {
-  min-block-size: 2rem;
+  block-size: calc(100% - 0.5rem);
+  margin-block: 0.25rem;
   margin-inline-end: 0.75rem;
   padding-inline: 0.875rem;
   border: 0.125rem solid var(--button-border);
@@ -299,18 +340,25 @@ input[type="file"]:hover::file-selector-button {
 }
 
 .preview-stage {
-  min-block-size: clamp(12rem, 24vh, 15rem);
-  padding: 0.875rem 1rem;
+  block-size: clamp(12rem, 24vh, 15rem);
+  padding: 0;
   border: 0.125rem dashed rgba(109, 138, 153, 0.5);
   border-radius: var(--soft-radius);
   background: rgba(255, 255, 255, 0.38);
   display: grid;
   place-items: center;
+  overflow: hidden;
 }
 
 .preview-card img {
-  inline-size: 100%;
-  block-size: clamp(8rem, 18vh, 11rem);
+  inline-size: auto;
+  block-size: auto;
+  min-inline-size: 0;
+  min-block-size: 0;
+  max-inline-size: 100%;
+  max-block-size: 100%;
+  justify-self: center;
+  align-self: center;
   object-fit: contain;
 }
 
@@ -324,6 +372,7 @@ input[type="file"]:hover::file-selector-button {
 
 .preview-placeholder {
   margin: 0;
+  padding: 1rem;
   max-inline-size: 26ch;
   text-align: center;
   font-size: clamp(1rem, 1.25vw, 1.12rem);
@@ -332,8 +381,9 @@ input[type="file"]:hover::file-selector-button {
 }
 
 .middle-layout {
-  margin-block: clamp(1rem, 2.3vh, 1.5rem) clamp(0.85rem, 2vh, 1.2rem);
-  margin-inline: auto;
+  inline-size: 100%;
+  margin-block: clamp(0.6rem, 1.3vh, 0.95rem) clamp(0.85rem, 2vh, 1.2rem);
+  margin-inline: 0;
   display: grid;
   justify-items: center;
   gap: 0.375rem;
@@ -368,6 +418,7 @@ button:disabled {
   inline-size: auto;
   max-inline-size: 100%;
   padding-inline: clamp(0.9rem, 1.6vw, 1.3rem);
+  box-shadow: 0 0.375rem 0.875rem rgba(109, 138, 153, 0.14);
   white-space: nowrap;
 }
 
@@ -378,6 +429,27 @@ button:disabled {
   font-size: clamp(1.1rem, 1.4vw, 1.25rem);
   color: var(--text-muted);
   text-align: center;
+}
+
+#status[data-state="loading_model"],
+#status[data-state="processing"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-inline: auto;
+}
+
+#status[data-state="loading_model"]::before,
+#status[data-state="processing"]::before {
+  content: "";
+  inline-size: clamp(2.9rem, 4.3vw, 3.6rem);
+  block-size: clamp(2.9rem, 4.3vw, 3.6rem);
+  flex: 0 0 auto;
+  background-image: url("/images/cat-gif.gif");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 130% auto;
 }
 
 #status:empty,
@@ -411,93 +483,111 @@ button:disabled {
   .page {
     --page-max: 80rem;
     --page-pad: clamp(1.1rem, 2vmin, 1.4rem);
-    --panel-pad: 1.75rem;
-    --layout-gap: 0.75rem;
-    --field-gap: 0.625rem;
+    --cat-rise-start: clamp(4rem, 7.2vh, 6.1rem);
+    --panel-pad: 1.5rem;
+    --layout-gap: 0.625rem;
+    --field-gap: 0.5rem;
     --preview-card-width: clamp(19.5rem, 24vw, 23.5rem);
     padding-block-end: 0;
     block-size: 100dvh;
   }
 
   .card {
-    flex: 1 1 auto;
+    inline-size: min(100%, 68rem);
+    flex: 0 1 auto;
     min-block-size: 0;
     overflow: hidden;
-    margin-block-end: var(--page-pad);
+    padding-block: 1.05rem;
+    margin-block-end: clamp(1.6rem, 3.8vh, 2.5rem);
+  }
+
+  .header {
+    margin-block-end: clamp(0.5rem, 1.05vh, 0.75rem);
   }
 
   .header h1 {
-    font-size: clamp(1.35rem, 2.35vw, 2rem);
+    font-size: clamp(1.28rem, 2.15vw, 1.9rem);
   }
 
   .subtitle {
-    font-size: clamp(0.98rem, 1.2vw, 1.28rem);
+    font-size: clamp(0.94rem, 1.1vw, 1.18rem);
   }
 
   .field span,
   .quality-label {
-    font-size: clamp(1.02rem, 1.2vw, 1.12rem);
+    font-size: clamp(0.98rem, 1.1vw, 1.08rem);
   }
 
   input[type="file"] {
-    font-size: clamp(0.92rem, 0.95vw, 1rem);
-    min-block-size: 2.75rem;
-    padding-block: 0.1875rem;
+    font-size: clamp(0.9rem, 0.92vw, 0.98rem);
+    block-size: 2.6rem;
   }
 
   input[type="file"]::file-selector-button {
-    font-size: 0.9rem;
-    min-block-size: 1.85rem;
+    font-size: 0.86rem;
+    block-size: calc(100% - 0.375rem);
+    margin-block: 0.1875rem;
   }
 
   .quality-option {
-    font-size: clamp(0.94rem, 0.98vw, 1.04rem);
-    min-block-size: 2.95rem;
-    padding-block: 0.375rem;
+    font-size: clamp(0.9rem, 0.95vw, 1rem);
+    min-block-size: 2.8rem;
+    padding-block: 0.3rem;
     padding-inline: 2.7rem 0.9rem;
   }
 
-  .preview-card h2 {
-    font-size: clamp(1.08rem, 1.25vw, 1.18rem);
+  .controls {
+    padding: 0.9rem 1rem;
   }
 
-  .top-layout > .preview-card,
+  .preview-card {
+    gap: 0.5rem;
+    padding: 0.5rem 0.625rem;
+  }
+
+  .preview-card h2 {
+    font-size: clamp(1rem, 1.15vw, 1.1rem);
+  }
+
+  .top-layout > .preview-column,
   .bottom-layout > .result-preview-card {
     inline-size: min(100%, var(--preview-card-width));
     max-inline-size: var(--preview-card-width);
     justify-self: start;
   }
 
-  .preview-stage {
-    min-block-size: clamp(9.25rem, 17vh, 11rem);
+  .bottom-layout > .download-panel {
+    inline-size: min(100%, var(--preview-card-width));
+    max-inline-size: var(--preview-card-width);
+    justify-self: start;
   }
 
-  .preview-card img {
-    block-size: clamp(6rem, 12vh, 8rem);
+  .preview-stage {
+    block-size: clamp(8.5rem, 15vh, 10rem);
   }
 
   .preview-placeholder {
-    font-size: clamp(0.92rem, 0.98vw, 1rem);
+    font-size: clamp(0.88rem, 0.94vw, 0.96rem);
   }
 
   .middle-layout {
-    margin-block: clamp(0.6rem, 1.3vh, 0.9rem) clamp(0.4rem, 1vh, 0.65rem);
+    margin-block: clamp(0.32rem, 0.75vh, 0.5rem) clamp(0.18rem, 0.45vh, 0.3rem);
   }
 
   button {
-    font-size: clamp(1.12rem, 1.3vw, 1.42rem);
-    min-block-size: 2.75rem;
-    padding-inline: clamp(0.9rem, 1.4vw, 1.2rem);
+    font-size: clamp(1.04rem, 1.2vw, 1.32rem);
+    min-block-size: 2.6rem;
+    padding-inline: clamp(0.85rem, 1.3vw, 1.1rem);
   }
 
   #status,
   #downloadStatus {
-    font-size: clamp(0.96rem, 1vw, 1.05rem);
+    font-size: clamp(0.9rem, 0.95vw, 1rem);
   }
 
   .download-panel {
-    min-block-size: clamp(9.25rem, 17vh, 11rem);
-    margin-block-start: clamp(0.3rem, 0.8vh, 0.45rem);
+    min-block-size: clamp(8.5rem, 15vh, 10rem);
+    margin-block-start: calc(1rem + clamp(1rem, 1.15vw, 1.1rem) * 1.15);
   }
 }
 
@@ -509,6 +599,7 @@ button:disabled {
   .page {
     --cat-width: clamp(9rem, 28vw, 14rem);
     --cat-space: clamp(6.5rem, 18vw, 8.5rem);
+    --cat-rise-start: clamp(2.8rem, 10vw, 4.2rem);
     --page-pad: 1rem;
     --panel-pad: 1.5rem;
     --preview-card-width: 100%;
@@ -529,10 +620,15 @@ button:disabled {
   }
 
   .preview-card,
+  .preview-column,
   .result-preview-card {
     inline-size: 100%;
     max-inline-size: 100%;
     justify-self: stretch;
+  }
+
+  .controls {
+    max-inline-size: 100%;
   }
 
   .download-panel {
@@ -540,8 +636,15 @@ button:disabled {
     margin-block-start: 0;
   }
 
-  .preview-card img {
-    block-size: clamp(10rem, 26vh, 14rem);
+  .preview-stage {
+    block-size: clamp(12rem, 26vh, 15rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cat {
+    animation: none;
+    transform: translateY(0);
   }
 }
 
@@ -559,7 +662,7 @@ button:disabled {
   }
 
   .preview-stage {
-    padding-inline: 0.75rem;
+    padding: 0;
   }
 
   button {

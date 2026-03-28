@@ -112,7 +112,7 @@ async function onRemoveClick() {
     }
     resultObjectUrl = URL.createObjectURL(blob);
     resultPreview.src = resultObjectUrl;
-    setStatus("done", `Done. Output ready (${backend.toUpperCase()}).`);
+    setStatus("done", `Done. Output ready (${backend.toUpperCase()}).✅`);
   } catch (error) {
     resultBlob = null;
     resultPreview.removeAttribute("src");
